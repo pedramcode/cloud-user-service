@@ -2,6 +2,7 @@
     "recommendations": [
         "rust-lang.rust-analyzer",
         "eamodio.gitlens",
-        "gruntfuggly.todo-tree"
+        "gruntfuggly.todo-tree",
+        "github.github-vscode-theme",
     ]
 }
