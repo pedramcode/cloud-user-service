@@ -1,7 +1,10 @@
 
-use chrono::{Duration, Utc};
+use std::str::FromStr;
 
-use crate::{entities::{otp::{OtpCreate, OtpMedia, OtpUpdate}, user::{User, UserCreate, UserUpdateSafe}}, repos::{otp::OtpRepo, traits::Crud, user::UserRepo}, utils::{jwt::issue_jwt, otp::generate_otp, security::{hash_password, verify_password}}};
+use chrono::{Duration, Utc};
+use uuid::Uuid;
+
+use crate::{entities::{otp::{OtpCreate, OtpMedia, OtpUpdate}, user::{User, UserCreate, UserUpdateSafe}}, repos::{otp::OtpRepo, traits::Crud, user::UserRepo}, utils::{jwt::{issue_jwt, validate_jwt}, otp::generate_otp, security::{hash_password, verify_password}}};
 
 
 pub struct UserService;
@@ -124,5 +127,10 @@ impl UserService {
         let access_token = issue_jwt(&user_res, crate::utils::jwt::JwtType::ACCESS);
         let refresh_token = issue_jwt(&user_res, crate::utils::jwt::JwtType::REFRESH);
         Ok((access_token, refresh_token, user_res))
+    }
+
+    pub async fn verify(token: &str) -> Result<User, String> {
+        let res = validate_jwt(token)?;
+        Ok(UserRepo::get_by_id(Uuid::from_str(res.claims.sub.as_str()).unwrap()).await?)
     }
 }
