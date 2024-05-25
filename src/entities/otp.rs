@@ -1,7 +1,6 @@
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
-
 #[derive(Copy, Debug, PartialEq)]
 pub enum OtpType {
     Unknown = 0,

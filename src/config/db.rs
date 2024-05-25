@@ -1,5 +1,5 @@
+use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tokio::sync::OnceCell;
-use sqlx::{Pool, Postgres, postgres::PgPoolOptions};
 
 static POOL: OnceCell<Pool<Postgres>> = OnceCell::const_new();
 
@@ -12,7 +12,8 @@ async fn initialize_database_connection() -> Pool<Postgres> {
     PgPoolOptions::new()
         .max_connections(max_conn)
         .connect(url.as_str())
-        .await.expect("unable to connect to database")
+        .await
+        .expect("unable to connect to database")
 }
 
 pub async fn pool() -> &'static Pool<Postgres> {

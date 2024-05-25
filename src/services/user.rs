@@ -1,53 +1,71 @@
-
 use std::str::FromStr;
 
 use chrono::{Duration, Utc};
 use uuid::Uuid;
 
-use crate::{entities::{otp::{OtpCreate, OtpMedia, OtpUpdate}, user::{User, UserCreate, UserUpdateSafe}}, repos::{otp::OtpRepo, traits::Crud, user::UserRepo}, utils::{jwt::{issue_jwt, validate_jwt}, otp::generate_otp, security::{hash_password, verify_password}}};
-
+use crate::{
+    entities::{
+        otp::{OtpCreate, OtpMedia, OtpUpdate},
+        user::{User, UserCreate, UserUpdateSafe},
+    },
+    repos::{otp::OtpRepo, traits::Crud, user::UserRepo},
+    utils::{
+        jwt::{issue_jwt, validate_jwt},
+        otp::generate_otp,
+        security::{hash_password, verify_password},
+    },
+};
 
 pub struct UserService;
 
 impl UserService {
     pub async fn register(
-        username: &str, 
-        password: &str, 
+        username: &str,
+        password: &str,
         phone: Option<&str>,
         email: Option<&str>,
-        is_admin: bool
+        is_admin: bool,
     ) -> Result<User, String> {
         let pass = hash_password(password);
-        let user = UserRepo::create(UserCreate{
-            email: match email {Some(dt) => Some(String::from(dt)), None=>None},
+        let user = UserRepo::create(UserCreate {
+            email: match email {
+                Some(dt) => Some(String::from(dt)),
+                None => None,
+            },
             email_verified: false,
             is_admin: is_admin,
             password: pass,
-            phone: match phone {Some(dt) => Some(String::from(dt)), None=>None},
+            phone: match phone {
+                Some(dt) => Some(String::from(dt)),
+                None => None,
+            },
             phone_verified: false,
             username: String::from(username),
-        }).await?;
+        })
+        .await?;
 
         if email != None {
-            let otp_res = OtpRepo::create(OtpCreate{
+            let otp_res = OtpRepo::create(OtpCreate {
                 is_used: false,
                 key: generate_otp(),
                 r#type: crate::entities::otp::OtpType::Verfiy,
                 user_id: user.id,
                 media: crate::entities::otp::OtpMedia::Email,
-            }).await?;
+            })
+            .await?;
             // TODO send email
             println!("{:?}", otp_res);
         }
 
         if phone != None {
-            let otp_res = OtpRepo::create(OtpCreate{
+            let otp_res = OtpRepo::create(OtpCreate {
                 is_used: false,
                 key: generate_otp(),
                 r#type: crate::entities::otp::OtpType::Verfiy,
                 user_id: user.id,
                 media: crate::entities::otp::OtpMedia::Phone,
-            }).await?;
+            })
+            .await?;
             // TODO send sms
             println!("{:?}", otp_res);
         }
@@ -57,19 +75,23 @@ impl UserService {
 
     pub async fn verify_email(otp_key: &str, username: &str) -> Result<User, String> {
         let res = OtpRepo::get_by_key_username(otp_key, username).await?;
-        if res.is_used || Utc::now() > res.created_at + Duration::minutes(2) || res.media != OtpMedia::Email {
+        if res.is_used
+            || Utc::now() > res.created_at + Duration::minutes(2)
+            || res.media != OtpMedia::Email
+        {
             return Err(String::from("otp is invalid"));
         }
         let user = UserRepo::get_by_id(res.user_id).await?;
-        OtpRepo::update(OtpUpdate{
+        OtpRepo::update(OtpUpdate {
             id: res.id,
             is_used: true,
             key: res.key,
             media: res.media,
             r#type: res.r#type,
             user_id: res.user_id,
-        }).await?;
-        let result = UserRepo::update_safe(UserUpdateSafe{
+        })
+        .await?;
+        let result = UserRepo::update_safe(UserUpdateSafe {
             email: user.email,
             email_verified: true,
             id: user.id,
@@ -77,25 +99,30 @@ impl UserService {
             phone: user.phone,
             phone_verified: user.phone_verified,
             username: user.username,
-        }).await?;
+        })
+        .await?;
         Ok(result)
     }
 
     pub async fn verify_phone(otp_key: &str, username: &str) -> Result<User, String> {
         let res = OtpRepo::get_by_key_username(otp_key, username).await?;
-        if res.is_used || Utc::now() > res.created_at + Duration::minutes(2) || res.media != OtpMedia::Phone {
+        if res.is_used
+            || Utc::now() > res.created_at + Duration::minutes(2)
+            || res.media != OtpMedia::Phone
+        {
             return Err(String::from("otp is invalid"));
         }
         let user = UserRepo::get_by_id(res.user_id).await?;
-        OtpRepo::update(OtpUpdate{
+        OtpRepo::update(OtpUpdate {
             id: res.id,
             is_used: true,
             key: res.key,
             media: res.media,
             r#type: res.r#type,
             user_id: res.user_id,
-        }).await?;
-        let result = UserRepo::update_safe(UserUpdateSafe{
+        })
+        .await?;
+        let result = UserRepo::update_safe(UserUpdateSafe {
             email: user.email,
             email_verified: user.email_verified,
             id: user.id,
@@ -103,7 +130,8 @@ impl UserService {
             phone: user.phone,
             phone_verified: true,
             username: user.username,
-        }).await?;
+        })
+        .await?;
         Ok(result)
     }
 
