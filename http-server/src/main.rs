@@ -35,6 +35,10 @@ async fn main() -> Result<(), rocket::Error> {
                 controllers::jwt::verify
             ],
         )
+        .mount(
+            "/api/v1/user",
+            rocket::routes![controllers::user::register,],
+        )
         .launch()
         .await?;
 

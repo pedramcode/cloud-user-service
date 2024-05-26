@@ -13,3 +13,13 @@ pub struct User {
     pub email_verified: bool,
     pub is_admin: bool,
 }
+
+#[derive(Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct RegisterRequest {
+    pub username: String,
+    pub password: String,
+    pub phone: Option<String>,
+    pub email: Option<String>,
+    pub is_admin: bool,
+}
