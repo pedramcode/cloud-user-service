@@ -4,5 +4,6 @@
         "eamodio.gitlens",
         "gruntfuggly.todo-tree",
         "github.github-vscode-theme",
+        "bierner.markdown-preview-github-styles",
     ]
 }
