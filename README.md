@@ -2,18 +2,18 @@
 
 ## Todo list
 
-[x] design and implement SOLID project structure
-[x] user models
-[x] user repository
-[x] user service
-[x] otp models
-[x] otp repository
-[x] otp service
-[x] JWT
-[x] setup Rocket web server
-[ ] setup structure for routing
-[ ] setup root controllers
-[ ] setup user controllers
+- [x] design and implement SOLID project structure
+- [x] user models
+- [x] user repository
+- [x] user service
+- [x] otp models
+- [x] otp repository
+- [x] otp service
+- [x] JWT
+- [x] setup Rocket web server
+- [ ] setup structure for routing
+- [ ] setup root controllers
+- [ ] setup user controllers
 
 ## environment variables
 
