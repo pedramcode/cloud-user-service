@@ -14,10 +14,11 @@
 - [x] setup structure for routing
 - [x] setup root controllers
 - [ ] setup user controllers
-- [ ] setup JWT controllers
+- [x] setup JWT controllers
     - [x] refresh
     - [x] access
-    - [ ] verify
+    - [x] verify
+- [] RBAC
 
 ## environment variables
 

@@ -25,3 +25,9 @@ pub struct RefreshRequest {
 pub struct RefreshResponse {
     pub access_token: String,
 }
+
+#[derive(Deserialize)]
+#[serde(crate = "rocket::serde")]
+pub struct VerifyRequest {
+    pub access_token: String,
+}

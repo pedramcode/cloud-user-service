@@ -29,7 +29,11 @@ async fn main() -> Result<(), rocket::Error> {
         )
         .mount(
             "/api/v1/jwt",
-            rocket::routes![controllers::jwt::fetch, controllers::jwt::refresh],
+            rocket::routes![
+                controllers::jwt::fetch,
+                controllers::jwt::refresh,
+                controllers::jwt::verify
+            ],
         )
         .launch()
         .await?;
