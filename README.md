@@ -14,7 +14,10 @@
 - [x] setup structure for routing
 - [x] setup root controllers
 - [ ] setup user controllers
-- [x] setup JWT controllers
+- [ ] setup JWT controllers
+    - [x] refresh
+    - [x] access
+    - [ ] verify
 
 ## environment variables
 
