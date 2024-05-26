@@ -13,7 +13,7 @@
 - [x] setup Rocket web server
 - [x] setup structure for routing
 - [x] setup root controllers
-- [ ] setup user controllers
+- [x] setup user controllers
 - [x] setup JWT controllers
     - [x] refresh
     - [x] access
