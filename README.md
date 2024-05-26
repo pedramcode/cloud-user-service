@@ -19,6 +19,12 @@
     - [x] access
     - [x] verify
 - [ ] RBAC
+    - [ ] roles entity, repo and service
+    - [ ] role APIs
+- [ ] caching
+    - [ ] setup redis
+    - [ ] implement caching strategies
+- [ ] setup gRPC crate
 
 ## environment variables
 
