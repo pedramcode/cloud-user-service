@@ -2,6 +2,7 @@ use std::{net::IpAddr, str::FromStr};
 
 pub mod config;
 pub mod controllers;
+pub mod dao;
 pub mod entities;
 pub mod repos;
 pub mod services;
@@ -31,6 +32,10 @@ async fn main() -> Result<(), rocket::Error> {
         .mount(
             "/",
             rocket::routes![controllers::root::root, controllers::root::ping],
+        )
+        .mount(
+            "/api/v1/jwt",
+            rocket::routes![controllers::jwt::fetch, controllers::jwt::refresh],
         )
         .launch()
         .await?;

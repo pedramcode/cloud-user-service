@@ -4,9 +4,42 @@ use serde::{Deserialize, Serialize};
 
 use crate::entities::user::User;
 
+#[derive(Debug, PartialEq)]
 pub enum JwtType {
     ACCESS,
     REFRESH,
+}
+
+impl JwtType {
+    pub fn from_int(n: i32) -> Self {
+        match n {
+            0 => JwtType::ACCESS,
+            1 => JwtType::REFRESH,
+            _ => panic!("invalid JWT type"),
+        }
+    }
+
+    pub fn from_str(s: &str) -> Self {
+        match s {
+            "acc" => JwtType::ACCESS,
+            "rfs" => JwtType::REFRESH,
+            _ => panic!("invalid JWT type"),
+        }
+    }
+
+    pub fn to_int(self: Self) -> i32 {
+        match self {
+            JwtType::ACCESS => 0,
+            JwtType::REFRESH => 1,
+        }
+    }
+
+    pub fn to_str(self: Self) -> &'static str {
+        match self {
+            JwtType::ACCESS => "acc",
+            JwtType::REFRESH => "rfs",
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -26,11 +59,11 @@ pub fn issue_jwt(user: &User, jwt_type: JwtType) -> String {
     match jwt_type {
         JwtType::ACCESS => {
             days = 2;
-            type_name.push_str("acc");
+            type_name.push_str(&JwtType::ACCESS.to_str());
         }
         JwtType::REFRESH => {
             days = 14;
-            type_name.push_str("rfs");
+            type_name.push_str(&JwtType::REFRESH.to_str());
         }
     }
     let claims = Claims {

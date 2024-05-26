@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use chrono::{Duration, Utc};
+use jsonwebtoken::TokenData;
 use uuid::Uuid;
 
 use crate::{
@@ -10,7 +11,7 @@ use crate::{
     },
     repos::{otp::OtpRepo, traits::Crud, user::UserRepo},
     utils::{
-        jwt::{issue_jwt, validate_jwt},
+        jwt::{issue_jwt, validate_jwt, Claims},
         otp::generate_otp,
         security::{hash_password, verify_password},
     },
@@ -157,8 +158,11 @@ impl UserService {
         Ok((access_token, refresh_token, user_res))
     }
 
-    pub async fn verify(token: &str) -> Result<User, String> {
+    pub async fn verify(token: &str) -> Result<(User, TokenData<Claims>), String> {
         let res = validate_jwt(token)?;
-        Ok(UserRepo::get_by_id(Uuid::from_str(res.claims.sub.as_str()).unwrap()).await?)
+        Ok((
+            UserRepo::get_by_id(Uuid::from_str(res.claims.sub.as_str()).unwrap()).await?,
+            res,
+        ))
     }
 }
