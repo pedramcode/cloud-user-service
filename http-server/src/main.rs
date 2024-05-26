@@ -37,7 +37,11 @@ async fn main() -> Result<(), rocket::Error> {
         )
         .mount(
             "/api/v1/user",
-            rocket::routes![controllers::user::register,],
+            rocket::routes![
+                controllers::user::register,
+                controllers::user::verify_email,
+                controllers::user::verify_phone
+            ],
         )
         .launch()
         .await?;

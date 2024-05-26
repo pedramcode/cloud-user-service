@@ -45,3 +45,31 @@ pub async fn register(data: Json<RegisterRequest>) -> ResponseType<FetchResponse
         }),
     );
 }
+
+#[rocket::put("/verify/email/<username>/<otp>")]
+pub async fn verify_email(username: String, otp: String) -> ResponseType<()> {
+    let res = UserService::verify_email(otp.as_str(), username.as_str()).await;
+    match res {
+        Ok(_) => response::<()>(rocket::http::Status::Ok, Some("email verified"), None, None),
+        Err(err) => response::<()>(
+            rocket::http::Status::BadRequest,
+            None,
+            Some(err.as_str()),
+            None,
+        ),
+    }
+}
+
+#[rocket::put("/verify/phone/<username>/<otp>")]
+pub async fn verify_phone(username: String, otp: String) -> ResponseType<()> {
+    let res = UserService::verify_phone(otp.as_str(), username.as_str()).await;
+    match res {
+        Ok(_) => response::<()>(rocket::http::Status::Ok, Some("phone verified"), None, None),
+        Err(err) => response::<()>(
+            rocket::http::Status::BadRequest,
+            None,
+            Some(err.as_str()),
+            None,
+        ),
+    }
+}
