@@ -2,7 +2,7 @@ use chrono::{Duration, Utc};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, TokenData};
 use serde::{Deserialize, Serialize};
 
-use crate::entities::user::User;
+use user_service::entities::user::User;
 
 #[derive(Debug, PartialEq)]
 pub enum JwtType {

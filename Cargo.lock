@@ -266,22 +266,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cloud_user_service"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "dotenvy",
- "jsonwebtoken",
- "pwhash",
- "rand",
- "rocket",
- "serde",
- "sqlx",
- "tokio",
- "uuid",
-]
-
-[[package]]
 name = "const-oid"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -802,6 +786,20 @@ dependencies = [
  "bytes",
  "http 0.2.12",
  "pin-project-lite",
+]
+
+[[package]]
+name = "http_server"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "dotenvy",
+ "jsonwebtoken",
+ "rocket",
+ "serde",
+ "tokio",
+ "user_service",
+ "uuid",
 ]
 
 [[package]]
@@ -2454,6 +2452,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "daf8dba3b7eb870caf1ddeed7bc9d2a049f3cfdfae7cb521b087cc33ae4c49da"
 
 [[package]]
+name = "user_service"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "pwhash",
+ "rand",
+ "sqlx",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
 name = "uuid"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2781,6 +2791,6 @@ dependencies = [
 
 [[package]]
 name = "zeroize"
-version = "1.7.0"
+version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "525b4ec142c6b68a2d10f01f7bbf6755599ca3f81ea53b8431b7dd348f5fdb2d"
+checksum = "ced3678a2879b30306d323f4542626697a464a97c0a07c9aebf7ebca65cd4dde"

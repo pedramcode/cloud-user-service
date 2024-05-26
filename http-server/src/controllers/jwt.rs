@@ -1,12 +1,19 @@
+use std::str::FromStr;
+
 use rocket::serde::json::Json;
+use uuid::Uuid;
 
 use crate::{
     dao::jwt::{FetchRequest, FetchResponse, RefreshRequest, RefreshResponse},
-    services::user::UserService,
     utils::{
-        jwt::{issue_jwt, JwtType},
+        jwt::{issue_jwt, validate_jwt, JwtType},
         response::{response, ResponseType},
     },
+};
+
+use user_service::{
+    repos::{traits::Crud, user::UserRepo},
+    services::user::UserService,
 };
 
 #[rocket::post("/fetch", data = "<data>")]
@@ -20,7 +27,9 @@ pub async fn fetch(data: Json<FetchRequest>) -> ResponseType<FetchResponse> {
             None,
         );
     }
-    let (access, refresh, _) = res.unwrap();
+    let user = res.unwrap();
+    let access = issue_jwt(&user, JwtType::ACCESS);
+    let refresh = issue_jwt(&user, JwtType::REFRESH);
     return response::<FetchResponse>(
         rocket::http::Status::Ok,
         None,
@@ -34,16 +43,29 @@ pub async fn fetch(data: Json<FetchRequest>) -> ResponseType<FetchResponse> {
 
 #[rocket::post("/refresh", data = "<data>")]
 pub async fn refresh(data: Json<RefreshRequest>) -> ResponseType<RefreshResponse> {
-    let res = UserService::verify(&data.refresh_token).await;
-    if res.is_err() {
+    let payload = validate_jwt(&data.refresh_token);
+    if payload.is_err() {
         return response::<RefreshResponse>(
             rocket::http::Status::BadRequest,
             None,
-            Some(res.err().unwrap().as_str()),
+            Some("invalid token"),
             None,
         );
     }
-    let (user, payload) = res.unwrap();
+    let payload = payload.unwrap();
+
+    let uid = Uuid::from_str(&data.refresh_token).unwrap();
+    let user = UserRepo::get_by_id(uid).await;
+    if user.is_err() {
+        return response::<RefreshResponse>(
+            rocket::http::Status::BadRequest,
+            None,
+            Some(user.err().unwrap().as_str()),
+            None,
+        );
+    }
+
+    let user = user.unwrap();
     if JwtType::from_str(&payload.claims.typ) != JwtType::REFRESH {
         return response::<RefreshResponse>(
             rocket::http::Status::BadRequest,

@@ -1,20 +1,14 @@
+extern crate user_service;
+
 use std::{net::IpAddr, str::FromStr};
 
-pub mod config;
 pub mod controllers;
 pub mod dao;
-pub mod entities;
-pub mod repos;
-pub mod services;
 pub mod utils;
 
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
     dotenvy::dotenv().expect("unable to find \".env\" file");
-    sqlx::migrate!("./migrations")
-        .run(&config::db::pool().await.clone())
-        .await
-        .expect("unable to migrate database");
 
     let mut http_config = rocket::Config::default();
     http_config.port = match std::env::var("HTTP_PORT") {

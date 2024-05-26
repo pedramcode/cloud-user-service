@@ -1,8 +1,4 @@
-use std::str::FromStr;
-
 use chrono::{Duration, Utc};
-use jsonwebtoken::TokenData;
-use uuid::Uuid;
 
 use crate::{
     entities::{
@@ -11,7 +7,6 @@ use crate::{
     },
     repos::{otp::OtpRepo, traits::Crud, user::UserRepo},
     utils::{
-        jwt::{issue_jwt, validate_jwt, Claims},
         otp::generate_otp,
         security::{hash_password, verify_password},
     },
@@ -136,7 +131,7 @@ impl UserService {
         Ok(result)
     }
 
-    pub async fn login(username: &str, password: &str) -> Result<(String, String, User), String> {
+    pub async fn login(username: &str, password: &str) -> Result<User, String> {
         let user = UserRepo::get_by_username(username).await?;
         let verified = verify_password(password, &user.password);
         if !verified {
@@ -153,16 +148,6 @@ impl UserService {
             updated_at: user.updated_at,
             username: user.username,
         };
-        let access_token = issue_jwt(&user_res, crate::utils::jwt::JwtType::ACCESS);
-        let refresh_token = issue_jwt(&user_res, crate::utils::jwt::JwtType::REFRESH);
-        Ok((access_token, refresh_token, user_res))
-    }
-
-    pub async fn verify(token: &str) -> Result<(User, TokenData<Claims>), String> {
-        let res = validate_jwt(token)?;
-        Ok((
-            UserRepo::get_by_id(Uuid::from_str(res.claims.sub.as_str()).unwrap()).await?,
-            res,
-        ))
+        Ok(user_res)
     }
 }
