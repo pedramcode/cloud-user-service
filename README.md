@@ -14,6 +14,7 @@
 - [ ] setup structure for routing
 - [ ] setup root controllers
 - [ ] setup user controllers
+- [ ] setup JWT controllers
 
 ## environment variables
 
