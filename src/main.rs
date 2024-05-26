@@ -1,6 +1,7 @@
 use std::{net::IpAddr, str::FromStr};
 
 pub mod config;
+pub mod controllers;
 pub mod entities;
 pub mod repos;
 pub mod services;
