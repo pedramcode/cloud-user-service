@@ -28,7 +28,10 @@ async fn main() -> Result<(), rocket::Error> {
 
     let _rocket = rocket::build()
         .configure(http_config)
-        .mount("/", rocket::routes![])
+        .mount(
+            "/",
+            rocket::routes![controllers::root::root, controllers::root::ping],
+        )
         .launch()
         .await?;
 

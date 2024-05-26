@@ -2,7 +2,7 @@
 
 ## Todo list
 
-- [x] design and implement SOLID project structure
+- [X] design and implement SOLID project structure
 - [x] user models
 - [x] user repository
 - [x] user service
@@ -12,7 +12,7 @@
 - [x] JWT
 - [x] setup Rocket web server
 - [ ] setup structure for routing
-- [ ] setup root controllers
+- [x] setup root controllers
 - [ ] setup user controllers
 - [ ] setup JWT controllers
 
