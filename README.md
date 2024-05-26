@@ -18,7 +18,7 @@
     - [x] refresh
     - [x] access
     - [x] verify
-- [] RBAC
+- [ ] RBAC
 
 ## environment variables
 
